@@ -46,11 +46,20 @@
       }
 
       try {
-        const resposta = await fetch('/api/alunos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
+        const resposta = await fetch('https://cadastro-api.onrender.com/api/alunos', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    nome_completo: nome,
+    usuario_acesso: usuario,
+    senha: senha,
+    email_aluno: email,
+    observacao: observacao
+  })
+});
+
 
         const resultado = await resposta.json();
 
