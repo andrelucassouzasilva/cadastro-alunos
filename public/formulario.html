@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Aluno</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+    input, textarea { width: 100%; padding: 8px; margin: 8px 0; }
+    button { padding: 10px 15px; background: green; color: white; border: none; cursor: pointer; }
+    .mensagem { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Cadastro de Aluno</h1>
+  <form id="formAluno">
+    <input type="text" name="nome_completo" placeholder="Nome completo" required />
+    <input type="text" name="usuario_acesso" placeholder="Usuário de acesso" required />
+    <input type="password" name="senha" placeholder="Senha" required />
+    <input type="email" name="email_aluno" placeholder="E-mail" required />
+    <textarea name="observacao" placeholder="Observações (opcional)"></textarea>
+    <button type="submit">Cadastrar</button>
+    <div class="mensagem" id="mensagem"></div>
+  </form>
+
+  <script>
+    const form = document.getElementById('formAluno');
+    const mensagem = document.getElementById('mensagem');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const dados = {
+        nome_completo: form.nome_completo.value,
+        usuario_acesso: form.usuario_acesso.value,
+        senha: form.senha.value,
+        email_aluno: form.email_aluno.value,
+        observacao: form.observacao.value
+      };
+
+      // Validação básica no cliente
+      if (!dados.nome_completo || !dados.usuario_acesso || !dados.senha || !dados.email_aluno) {
+        mensagem.textContent = 'Preencha todos os campos obrigatórios.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      try {
+        const resposta = await fetch('/api/alunos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados)
+        });
+
+        const resultado = await resposta.json();
+
+        if (resposta.ok) {
+          mensagem.textContent = resultado.mensagem;
+          mensagem.style.color = 'green';
+          form.reset();
+        } else {
+          mensagem.textContent = resultado.erro;
+          mensagem.style.color = 'red';
+        }
+      } catch (erro) {
+        mensagem.textContent = 'Erro ao conectar com o servidor.';
+        mensagem.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
